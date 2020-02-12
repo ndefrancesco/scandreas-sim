@@ -4,9 +4,10 @@ class Mirror {
   PVector par; // parallel unit vector 
   int id; // internal object id
   
-  float mrw; // mirror width
   boolean moving;
   boolean rotating;
+
+  float mrw; // mirror width
   boolean scan;
   float scan_delta = radians(0.1);
   float scan_amp = radians(2);
@@ -16,7 +17,7 @@ class Mirror {
     pos = new PVector (x, y);
     norm = PVector.fromAngle(-a * PI/180);
     par = new PVector (-norm.y, norm.x);
-    mrw = 300*su;
+    mrw = 50 / rs * su;
     id = mirror_code;
     rotating = false;
     moving = false;
@@ -37,8 +38,6 @@ class Mirror {
       }
       scan_delta *= -1;
     }
-    
-    
   }
   
   void update() {

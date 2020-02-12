@@ -3,7 +3,8 @@ Source sc;
 Button[] bt;
 
 int nmr = 3; // number of mirrors
-float su; //screen units
+float su; // screen units (to adjust for smaller screens, e.g. cellphone using APDE)
+float rs; // real scale: screen unit size (mm)
 int enabled; // type of object that is enabled for selection/editing
 boolean buttonPressed; //
 int activeObject; // object that is selected for editing
@@ -17,7 +18,9 @@ final int TYPE_NONE = -1;
 void setup() {
   // fullScreen();
   size(1200,800);
-  su = height/1500.0;
+  su = height/1500.0; // px/su
+  rs = 0.16667; // mm/su
+ 
   sc = new Source( 934, 377, 155);
 
   mr = new Mirror[nmr];
@@ -54,11 +57,13 @@ void draw() {
     bt[i].update();
     }
   
+  
   for(int i=0; i<nmr; i++) {
     mr[i].update();
-    println(i, mr[i].pos, degrees(mr[i].norm.heading()));
+    println("m" + i, mr[i].pos, degrees(mr[i].norm.heading()));
   }
   sc.update();
   println("r", sc.rays[0].pos, degrees(sc.rays[0].dir.heading()));
   println();
+  
 }
