@@ -10,6 +10,7 @@ class Source {
   boolean clicked;
   boolean moff;
 
+  float scan_latPos = 0;
   float scan_minLat = 0;
   float scan_maxLat = 0;
   float scan_minPath = 1e6;
@@ -125,6 +126,26 @@ class Source {
     
     trace(); // check if it hits something and reflect accordingly
    
+    if (doScan) { // to keep the ray scan statistics after tracing
+      scan_minPath =  min(scan_minPath, len);
+      scan_maxPath =  max(scan_maxPath, len);
+      
+      float lat_pos =  PVector.dot(rays[rays.length - 1].pos, new PVector(- rays[rays.length - 1].dir.y, rays[rays.length - 1].dir.x)); 
+      scan_latPos = lat_pos;
+      
+      if (mr[0].scan_index == 0 ) {
+        scan_minLat = lat_pos;
+      }
+      if (mr[0].scan_index == mr[0].scan_range - 1) {
+        scan_maxLat  = lat_pos;      
+        
+        scan_lminP = scan_minPath;
+        scan_lmaxP = scan_maxPath;
+        scan_minPath = Float.NaN;
+        scan_maxPath = Float.NaN;
+      }  
+    }
+   
     for (int i=0; i < rays.length; i++){
       rays[i].update();
     }
@@ -142,7 +163,7 @@ class Source {
     textAlign(LEFT);
     textSize(32 * su);
     text("exit angle (deg): " + roundTo(-degrees(rays[rays.length-1].dir.heading()), 4) + " ("+ roundTo(degrees(acos(PVector.dot(rays[rays.length-1].dir, rays[0].dir))), 4) +")", width * 0.7, height * 0.9);
-    text("path len diff (mm): " + roundTo((sc.len - scan_lminP) / su * rs, 4) + " ("+ nfp(degrees(mr[0].scan_pos), 1, 2)+")", width * 0.7, height * 0.9 + 50*su);
+    text("path len diff (mm): " + roundTo((len - scan_lminP) / su * rs, 4) + " ("+ nfp(degrees(- mr[0].scan_pos), 1, 2)+")", width * 0.7, height * 0.9 + 50*su);
     text("scan width (mm): " + roundTo(abs(scan_minLat - scan_maxLat) / su * rs, 4) , width * 0.7, height * 0.9 + 100*su);
   }
 }

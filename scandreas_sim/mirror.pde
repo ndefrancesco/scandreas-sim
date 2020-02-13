@@ -1,7 +1,8 @@
 class Mirror {
   PVector pos; // position
   PVector norm; // normal unit vector
-  PVector par; // parallel unit vector 
+  PVector par; // parallel unit vector
+  float center_angle;
   int id; // internal object id
   
   boolean moving;
@@ -11,13 +12,16 @@ class Mirror {
 
   float mrw; // mirror width
   boolean scan;
-  float scan_delta = radians(0.05);
-  float scan_amp = radians(2);
+  int scan_range = 81; // should be odd
+  int scan_step = 1;
+  int scan_index;
   float scan_pos;
+  float scan_amp = radians(1.6);
   
   Mirror (float x, float y, float a, int mirror_id){
     pos = new PVector (x, y);
-    norm = PVector.fromAngle(-a * PI/180);
+    center_angle = radians(-a);
+    norm = PVector.fromAngle(center_angle);
     par = new PVector (-norm.y, norm.x);
     mrw = 50 / rs * su;
     id = mirror_id;
@@ -27,28 +31,22 @@ class Mirror {
     moff = false;
     scan = false;
     scan_pos = 0.0;
+    scan_index = (scan_range-1) / 2 ; //center position
   }
   
   void scanStep(){
-    scan_pos += scan_delta;
-    float heading = norm.heading();
-    norm = PVector.fromAngle(heading + scan_delta);
+    scan_index += scan_step;
+    
+    scan_pos = (float(2 * scan_index)/(scan_range - 1) - 1) * scan_amp;
+    
+    norm = PVector.fromAngle(center_angle + scan_pos);
     par = new PVector (-norm.y, norm.x);
-    sc.scan_minPath =  min(sc.scan_minPath, sc.len);
-    sc.scan_maxPath =  max(sc.scan_maxPath, sc.len);
-    if(abs(scan_pos) >= scan_amp) {
-      float extreme =  PVector.dot(sc.rays[sc.rays.length-1].pos, new PVector(- sc.rays[sc.rays.length-1].dir.y, sc.rays[sc.rays.length-1].dir.x)); 
-      if(scan_delta > 0){
-        sc.scan_maxLat  = extreme;
-      } else {
-        sc.scan_minLat = extreme;
-        
-        sc.scan_lminP = sc.scan_minPath;
-        sc.scan_lmaxP = sc.scan_maxPath;
-        sc.scan_minPath = 1e6;
-        sc.scan_maxPath = 0;
+    
+    if (scan_index == 0 ) {
+      scan_step = 1;
       }
-      scan_delta *= -1;
+    if (scan_index == scan_range-1) {
+      scan_step = -1;       
     }
   }
   
@@ -76,6 +74,7 @@ class Mirror {
           if(rotating && delta.mag() > 50 * su){
             par = delta.mult(PVector.dot(delta, par)).normalize();
             norm = new PVector(par.y, -par.x);
+            center_angle = norm.heading() - scan_pos;
           }
         }
       }

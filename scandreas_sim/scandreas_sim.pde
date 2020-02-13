@@ -8,8 +8,7 @@ float rs; // real scale: screen unit size (mm)
 int typeInUse; // type of object currently being modified
 int activeObject; // object that is selected for editing
 boolean doScan = true; // scan mirrors that are enabled to do so
-float gridSpacing = 25; // grid spacing (mm)
-//PGraphics canvas;
+float gridSpacing = 20; // grid spacing (mm)
 
 final int TYPE_SOURCE = 1;
 final int TYPE_MIRROR = 2;
@@ -41,10 +40,6 @@ void setup() {
   
   typeInUse = TYPE_NONE;
   
-  //canvas = createGraphics(width, height);
-  //canvas.beginDraw();
-  //canvas.background(255);
-  //canvas.endDraw();
 }
   
 void draw() {
@@ -52,9 +47,7 @@ void draw() {
   makeGrid(gridSpacing/rs*su);
   noStroke();
   fill(255);
-  rect(0, height*0.8, width, height*0.3);
-  //imageMode(CORNER);
-  //image(canvas, 0, 0, width, height);
+  rect(0, height*0.74, width, height*0.3);
   
   for(int i = 0; i < bt.length; i++) {
     bt[0].update();
