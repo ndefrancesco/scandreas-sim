@@ -7,7 +7,9 @@ class Source {
   
   boolean moving;
   boolean rotating;
-  
+  boolean clicked;
+  boolean moff;
+
   float scan_min = 0;
   float scan_max = 0;
   
@@ -18,12 +20,14 @@ class Source {
     rays[0] = new Ray(pos.x, pos.y, ray_dir);
     moving = false;
     rotating = false;
+    clicked = false;
+    moff = false;
     id = source_id;
   }
   
   void trace(){
     float far;
-    rays = (Ray[]) expand(rays, 1);
+    rays = (Ray[]) expand(rays, 1); // delete current ray tracing except first segment
     int rindex = 0;
     int hit = 0;
     
@@ -71,21 +75,48 @@ class Source {
   }
   
   void update(){
-    if (mousePressed && !buttonPressed && enabled == 1) {
+    if (mousePressed && (typeInUse == TYPE_NONE || typeInUse == TYPE_SOURCE)) {
       PVector mpos = new PVector (mouseX, mouseY);
       PVector delta = PVector.sub(mpos, pos);
-      if((delta.mag()< 100 * su && !rotating) || moving){ // moving the source
-         moving = true;
-         pos = mpos;
-         rays[0].pos  = pos;
+      
+      if(activeObject == id && delta.mag() > 50 * su && !clicked) moving = true;
+      if((delta.mag()< 25 * su && !rotating && !moff) || moving) { // moving the source
+        if(activeObject == id && (moving || clicked)) { // move the mirror
+            pos = mpos;
+            rays[0].pos  = pos;
+            moving = true;
+          }
+        if(activeObject == -1){
+          activeObject = id;
+          typeInUse = TYPE_SOURCE;
+        }  
       }
-      else { // just changing the direction
-        rotating = true;
-        rays[0].dir = delta.normalize();
+      else if (abs(PVector.dot(delta, rays[0].dir)) > delta.mag() * .99 || rotating) {
+        if(activeObject == id){
+          typeInUse = TYPE_SOURCE;
+          if(abs(delta.mag())< rays[0].len + 25 * su && abs(PVector.dot(delta, rays[0].norm)) < 25 * su ) rotating = true;
+          if(rotating && delta.mag() > 50 * su){
+            rays[0].dir = delta.normalize();
+            rays[0].norm = new PVector(rays[0].dir.y, -rays[0].dir.x);
+          }
+        }
+      }
+    else {
+        if(activeObject == id && !rotating && clicked){
+          activeObject = -1;
+          clicked = false;
+        }
+        moff = true;
       }
     } else {
-      moving = false;
+      if(activeObject == id) {
+        clicked = true;
+        if (typeInUse == TYPE_MIRROR) typeInUse = TYPE_NONE;
+      }
       rotating = false;
+      moving = false;
+      moff = false;
+      if (typeInUse == TYPE_SOURCE) typeInUse = TYPE_NONE;
     }
     
     trace(); // check if it hits something and reflect accordingly
@@ -109,10 +140,5 @@ class Source {
     text("exit angle (deg): " + roundTo(-degrees(rays[rays.length-1].dir.heading()), 4) + " ("+ roundTo(degrees(acos(PVector.dot(rays[rays.length-1].dir, rays[0].dir))), 4) +")", width * 0.7, height * 0.9);
     text("path length (mm): " + roundTo(rays[rays.length-1].len * rs, 4) , width * 0.7, height * 0.9 + 50*su);
     text("scan width (mm): " + roundTo(abs(scan_min - scan_max) * rs, 4) , width * 0.7, height * 0.9 + 100*su);
-  }
-  
-  float roundTo(float v, int decimals){
-    float r = round(v * pow(10, decimals))/pow(10, decimals);
-    return r;
   }
 }

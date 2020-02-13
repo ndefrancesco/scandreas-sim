@@ -11,9 +11,9 @@ class Mirror {
 
   float mrw; // mirror width
   boolean scan;
-  float scan_delta = radians(0.1);
+  float scan_delta = radians(0.05);
   float scan_amp = radians(2);
-  float scan_pos = 0;
+  float scan_pos;
   
   Mirror (float x, float y, float a, int mirror_id){
     pos = new PVector (x, y);
@@ -26,6 +26,7 @@ class Mirror {
     clicked = false;
     moff = false;
     scan = false;
+    scan_pos = 0.0;
   }
   
   void scanStep(){
@@ -45,21 +46,25 @@ class Mirror {
   }
   
   void update() {
-    if (mousePressed && !buttonPressed && enabled == 2) {
+    if (mousePressed && (typeInUse == TYPE_NONE || typeInUse == TYPE_MIRROR)) {
       
       PVector mpos =  new PVector(mouseX, mouseY);
       PVector delta = PVector.sub(mpos, pos);
       
       if(activeObject == id && delta.mag() > 50 * su && !clicked) moving = true;
-      if ((delta.mag()< 25 * su && !rotating && !moff) || moving) { // moving the source
-        if(activeObject == id && (moving || clicked)) {
+      if ((delta.mag()< 25 * su && !rotating && !moff) || moving) { // select mirror
+        if(activeObject == id && (moving || clicked)) { // move the mirror
             pos = mpos;
             moving = true;
           }
-        if(activeObject == -1) activeObject = id;
+        if(activeObject == -1) {
+          activeObject = id;
+          typeInUse = TYPE_MIRROR;
+        }
       }
       else if (abs(PVector.dot(delta, par)) > delta.mag() * .99 || rotating) { // rotate mirror
         if(activeObject == id){
+          typeInUse = TYPE_MIRROR;
           if(abs(delta.mag() - mrw/2)< 25 * su) rotating = true;
           if(rotating && delta.mag() > 50 * su){
             par = delta.mult(PVector.dot(delta, par)).normalize();
@@ -75,13 +80,19 @@ class Mirror {
         moff = true;
       }
     } else {
-      if(activeObject == id) clicked = true;
+      if(activeObject == id) {
+        clicked = true;
+        if (typeInUse == TYPE_MIRROR) typeInUse = TYPE_NONE;
+      }
       rotating = false;
       moving = false;
       moff = false;
+
     } 
     
-    if(scan) scanStep();
+    if(scan && doScan) {
+      scanStep();
+    }
     
     noStroke();
     fill(0);

@@ -1,6 +1,7 @@
 class Ray {
   PVector dir; // direction of propagation
   PVector pos; // position of the source
+  PVector norm; // direction normal to the ray
   Float len; // length of the ray
   Float accLen; // accumulated length (from source)
   int fromMirror;
@@ -8,6 +9,7 @@ class Ray {
   Ray(float x, float y, PVector ray_dir) {
     pos = new PVector(x, y);
     dir = ray_dir;
+    norm = new PVector (-dir.y, dir.x);
     len = max(width, height) * 2.0;
     accLen = 0.0;
     fromMirror = -1;
@@ -18,7 +20,7 @@ class Ray {
     strokeWeight(5 * su);
     line(pos.x, pos.y, pos.x + dir.x * len, pos.y + dir.y * len);
     
-    PVector perp = new PVector (-dir.y, dir.x).mult(15 * su);
+    PVector perp = norm.copy().mult(15 * su);
     stroke(color(0, 200, 100));
     strokeWeight(su);
     float lpos;
