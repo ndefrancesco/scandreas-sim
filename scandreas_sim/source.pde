@@ -74,7 +74,7 @@ class Source {
       if(rindex > maxRef) hit = -1;
     }
   
-  len = rays[rays.length-1].accLen;
+  len = rays[rays.length-1].accLen + rays[rays.length-1].len;
 
   }
   
