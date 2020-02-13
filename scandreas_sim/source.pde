@@ -3,7 +3,7 @@ class Source {
   PVector pos; // position of the source
   Float len; // length of the whole trace, excluding the last ray
   int maxRef = 20; // Limits the number of bounces to avoid problems
-  int id = nmr;
+  int id;
   
   boolean moving;
   boolean rotating;
@@ -11,13 +11,14 @@ class Source {
   float scan_min = 0;
   float scan_max = 0;
   
-  Source(float x, float y, float a){
+  Source(float x, float y, float a, int source_id){
     pos = new PVector(x, y);
     PVector ray_dir = PVector.fromAngle(a/180*PI);
     rays = new Ray[1];
     rays[0] = new Ray(pos.x, pos.y, ray_dir);
     moving = false;
     rotating = false;
+    id = source_id;
   }
   
   void trace(){

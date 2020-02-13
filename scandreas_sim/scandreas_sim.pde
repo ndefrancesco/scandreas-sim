@@ -21,7 +21,7 @@ void setup() {
   su = height/1500.0; // px/su
   rs = 0.16667; // mm/su
  
-  sc = new Source( 934, 377, 155);
+  sc = new Source( 934, 377, 155, nmr);
 
   mr = new Mirror[nmr];
   bt = new Button[3];
