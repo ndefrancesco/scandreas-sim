@@ -10,8 +10,12 @@ class Source {
   boolean clicked;
   boolean moff;
 
-  float scan_min = 0;
-  float scan_max = 0;
+  float scan_minLat = 0;
+  float scan_maxLat = 0;
+  float scan_minPath = 1e6;
+  float scan_maxPath = 0;
+  float scan_lminP = 1e6;
+  float scan_lmaxP = 0;
   
   Source(float x, float y, float a, int source_id){
     pos = new PVector(x, y);
@@ -138,7 +142,7 @@ class Source {
     textAlign(LEFT);
     textSize(32 * su);
     text("exit angle (deg): " + roundTo(-degrees(rays[rays.length-1].dir.heading()), 4) + " ("+ roundTo(degrees(acos(PVector.dot(rays[rays.length-1].dir, rays[0].dir))), 4) +")", width * 0.7, height * 0.9);
-    text("path length (mm): " + roundTo(rays[rays.length-1].len / su * rs, 4) , width * 0.7, height * 0.9 + 50*su);
-    text("scan width (mm): " + roundTo(abs(scan_min - scan_max) / su * rs, 4) , width * 0.7, height * 0.9 + 100*su);
+    text("path len diff (mm): " + roundTo((sc.len - scan_lminP) / su * rs, 4) + " ("+ nfp(degrees(mr[0].scan_pos), 1, 2)+")", width * 0.7, height * 0.9 + 50*su);
+    text("scan width (mm): " + roundTo(abs(scan_minLat - scan_maxLat) / su * rs, 4) , width * 0.7, height * 0.9 + 100*su);
   }
 }

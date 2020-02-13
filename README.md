@@ -35,6 +35,6 @@ The canvas is scaled in millimeters (mm). The default mirror width is 50 mm.
 
 On the bottom of the window, the following information is provided:
 - Angle of the exit beam, and the angle that it forms with the input beam (in parenthesis).
-- Beam path length: this is measured from the source to either: 1) an off-screen target that is a fixed distance from the canvas center and always perpendicular to the exit beam, 2) a terminating point, i.e. it hits the back of a mirror.
+- Beam path length difference: this is the difference bethween the minimal length and the current length, always measured from the source to either: 1) an off-screen target that is a fixed distance from the canvas center and always perpendicular to the exit beam, 2) a terminating point, i.e. it hits the back of a mirror. Following any change in the ray path, this quantity will only be meaningful after a full scan cycle has elapsed. The corresponding scan angle is shown in parenthesis.
 - Scan width: it is the distance between the end positions in a full scan, measured perpendicular to the exit beam. This measurement only makes sense if the exit beam has no angular scan component (i.e.: the exit angle is constant).
 

@@ -33,13 +33,20 @@ class Mirror {
     scan_pos += scan_delta;
     float heading = norm.heading();
     norm = PVector.fromAngle(heading + scan_delta);
-    par = new PVector (-norm.y, norm.x);    
+    par = new PVector (-norm.y, norm.x);
+    sc.scan_minPath =  min(sc.scan_minPath, sc.len);
+    sc.scan_maxPath =  max(sc.scan_maxPath, sc.len);
     if(abs(scan_pos) >= scan_amp) {
       float extreme =  PVector.dot(sc.rays[sc.rays.length-1].pos, new PVector(- sc.rays[sc.rays.length-1].dir.y, sc.rays[sc.rays.length-1].dir.x)); 
       if(scan_delta > 0){
-        sc.scan_max  = extreme;
+        sc.scan_maxLat  = extreme;
       } else {
-        sc.scan_min = extreme;
+        sc.scan_minLat = extreme;
+        
+        sc.scan_lminP = sc.scan_minPath;
+        sc.scan_lmaxP = sc.scan_maxPath;
+        sc.scan_minPath = 1e6;
+        sc.scan_maxPath = 0;
       }
       scan_delta *= -1;
     }
