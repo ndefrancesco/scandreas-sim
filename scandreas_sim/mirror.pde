@@ -16,7 +16,7 @@ class Mirror {
   int scan_step = 1;
   int scan_index;
   float scan_pos;
-  float scan_amp = radians(1.6);
+  float scan_amp = radians(-0.8);
   
   Mirror (float x, float y, float a, int mirror_id){
     pos = new PVector (x, y);

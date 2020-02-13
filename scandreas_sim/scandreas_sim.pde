@@ -1,6 +1,7 @@
 Mirror[] mr;
 Source sc;
 Button[] bt;
+Plot[] plt;
 
 int nmr = 3; // number of mirrors
 float su; // screen units (to adjust for smaller screens, e.g. cellphone using APDE)
@@ -24,16 +25,25 @@ void setup() {
   sc = new Source( 934, 377, 155, nmr);
 
   mr = new Mirror[nmr];
-  bt = new Button[1];
-  
+  bt = new Button[2];
+  plt = new Plot[3];
 
   mr[0] = new Mirror(600, 533, 90, 0);
   mr[0].scan = true; // scanning mirror
-  mr[1] = new Mirror(390, 447, 0, 1);
+  mr[1] = new Mirror(393, 436, 0, 1);
   mr[2] = new Mirror(711, 283, -135, 2);
   
 
-  bt[0] = new Button(width*0.1, height * 0.9, color(200, 100, 100), true, TYPE_NONE, "Scan");
+  bt[0] = new Button(width*0.72, height * 0.78, color(100, 100, 200), true, TYPE_NONE, "toggle scan");
+  bt[1] = new Button(width*0.87, height * 0.78, color(200, 100, 100), true, TYPE_NONE, "reset scan");
+  
+  plt[0] = new Plot(width*0.05, height * 0.75, color(200, 100, 0), "path len diff", int(mr[0].scan_range));
+  plt[1] = new Plot(width*0.35, height * 0.75, color(0, 100, 200), "lateral scan pos", int(mr[0].scan_range));
+ 
+  for(int i = 0; i<plt[0].nvalues; i++){
+    plt[0].xvalues[i] = (float(2 * i)/(mr[0].scan_range - 1) - 1) * degrees(-mr[0].scan_amp);
+    plt[1].xvalues[i] = (float(2 * i)/(mr[0].scan_range - 1) - 1) * degrees(-mr[0].scan_amp);
+  }
   
   activeObject = nmr;
   sc.trace();
@@ -50,19 +60,33 @@ void draw() {
   rect(0, height*0.74, width, height*0.3);
   
   for(int i = 0; i < bt.length; i++) {
-    bt[0].update();
+    bt[i].update();
     }
   
   doScan = bt[0].statusOn;
+  if (bt[1].statusOn){
+    bt[1].statusOn = false;
+    mr[0].scan_index = (mr[0].scan_range-1) / 2 - 1;
+    mr[0].scan_step = 1;
+    mr[0].scanStep();
+  }
   
   for(int i=0; i<nmr; i++) {
     mr[i].update();
-    println("m" + i, mr[i].pos, degrees(mr[i].norm.heading()));
+    println("m" + i, mr[i].pos, degrees(-mr[i].center_angle));
   }
   sc.update();
-  println("r", sc.rays[0].pos, degrees(sc.rays[0].dir.heading()));
+  println("r", sc.rays[0].pos, degrees(-sc.rays[0].dir.heading()));
   println();
+    
+  plt[0].yvalues[mr[0].scan_index] = (sc.len - sc.scan_lminP) / su * rs;
+  plt[1].yvalues[mr[0].scan_index] = (sc.scan_latPos - sc.scan_minLat - (sc.scan_maxLat - sc.scan_minLat)/2) / su * rs;
   
+  plt[0].currIndex = mr[0].scan_index;
+  plt[1].currIndex = mr[0].scan_index;
+  
+  plt[0].update();
+  plt[1].update();
 }
 
 

@@ -15,7 +15,7 @@ class Button{
     enableType = enable;
     statusOn = status;
     clicked = false;
-    diam = 50 * su;
+    diam = 40 * su;
     label = lbl;
   }
   
@@ -47,8 +47,8 @@ class Button{
     ellipse(bx, by, diam, diam);
     
     fill(0);
-    textAlign(CENTER);
+    textAlign(LEFT);
     textSize(32 * su);
-    text(label, bx, by + 1.5 * diam );
+    text(label, bx + diam, by + 0.5 * diam - 10 * su);
   }
 }

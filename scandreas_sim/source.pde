@@ -15,8 +15,8 @@ class Source {
   float scan_maxLat = 0;
   float scan_minPath = 1e6;
   float scan_maxPath = 0;
-  float scan_lminP = 1e6;
-  float scan_lmaxP = 0;
+  float scan_lminP = Float.NaN; // last scan min
+  float scan_lmaxP = Float.NaN; // las scan max
   
   Source(float x, float y, float a, int source_id){
     pos = new PVector(x, y);
@@ -162,8 +162,13 @@ class Source {
     fill(0);
     textAlign(LEFT);
     textSize(32 * su);
-    text("exit angle (deg): " + roundTo(-degrees(rays[rays.length-1].dir.heading()), 4) + " ("+ roundTo(degrees(acos(PVector.dot(rays[rays.length-1].dir, rays[0].dir))), 4) +")", width * 0.7, height * 0.9);
-    text("path len diff (mm): " + roundTo((len - scan_lminP) / su * rs, 4) + " ("+ nfp(degrees(- mr[0].scan_pos), 1, 2)+")", width * 0.7, height * 0.9 + 50*su);
-    text("scan width (mm): " + roundTo(abs(scan_minLat - scan_maxLat) / su * rs, 4) , width * 0.7, height * 0.9 + 100*su);
+    float textH = height * 0.84;
+    float textW = width * 0.68;
+    float dH = 50 * su;
+    text("exit angle (deg): " + roundTo(-degrees(rays[rays.length-1].dir.heading()), 4) + " ("+ roundTo(degrees(acos(PVector.dot(rays[rays.length-1].dir, rays[0].dir))), 4) +")", textW, textH);
+    text("path len diff (mm): " + roundTo((len - scan_lminP) / su * rs, 4) + " ["+ nfp(degrees(- mr[0].scan_pos), 1, 2)+"°]", textW, textH + dH);
+    text("scan pos (mm): " + roundTo(abs(scan_latPos - scan_minLat - (scan_maxLat - scan_minLat)/2) / su * rs, 4) , textW, textH + 2 * dH);
+    text("max path diff (mm): " + roundTo((scan_lmaxP - scan_lminP) / su * rs, 4) + "  (" + roundTo((scan_lmaxP - scan_lminP)/(scan_maxLat - scan_minLat) * 100,2) + "% sw)", textW, textH + 3.2 * dH);
+    text("scan width (mm): " + roundTo(abs(scan_maxLat - scan_minLat) / su * rs, 4), textW, textH + 4.2 * dH);
   }
 }
