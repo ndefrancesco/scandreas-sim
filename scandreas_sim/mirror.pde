@@ -6,6 +6,8 @@ class Mirror {
   
   boolean moving;
   boolean rotating;
+  boolean clicked;
+  boolean moff;
 
   float mrw; // mirror width
   boolean scan;
@@ -21,6 +23,8 @@ class Mirror {
     id = mirror_code;
     rotating = false;
     moving = false;
+    clicked = false;
+    moff = false;
     scan = false;
   }
   
@@ -43,17 +47,16 @@ class Mirror {
   void update() {
     if (mousePressed && !buttonPressed && enabled == 2) {
       
-      PVector mpos = new PVector (mouseX, mouseY);
+      PVector mpos =  new PVector(mouseX, mouseY);
       PVector delta = PVector.sub(mpos, pos);
       
-      if ((delta.mag()< 100 * su && !rotating) || moving) { // moving the source
-        if(activeObject == -1 || activeObject == id){ 
-          moving = true;
-          activeObject = id;
-          if(delta.mag()>50 * su || activeObject == id){
+      if(activeObject == id && delta.mag() > 50 * su && !clicked) moving = true;
+      if ((delta.mag()< 25 * su && !rotating && !moff) || moving) { // moving the source
+        if(activeObject == id && (moving || clicked)) {
             pos = mpos;
+            moving = true;
           }
-        }
+        if(activeObject == -1) activeObject = id;
       }
       else if (abs(PVector.dot(delta, par)) > delta.mag() * .99 || rotating) { // rotate mirror
         if(activeObject == id){
@@ -65,12 +68,17 @@ class Mirror {
         }
       }
       else {
-        if(activeObject == id && !rotating) activeObject = -1;
-        //rotating = false;
+        if(activeObject == id && !rotating && clicked){
+          activeObject = -1;
+          clicked = false;
+        }
+        moff = true;
       }
     } else {
+      if(activeObject == id) clicked = true;
       rotating = false;
       moving = false;
+      moff = false;
     } 
     
     if(scan) scanStep();
