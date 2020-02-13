@@ -6,10 +6,14 @@ Plot[] plt;
 int nmr = 3; // number of mirrors
 float su; // screen units (to adjust for smaller screens, e.g. cellphone using APDE)
 float rs; // real scale: screen unit size (mm)
+float pannelTop;
+
 int typeInUse; // type of object currently being modified
 int activeObject; // object that is selected for editing
 boolean doScan = true; // scan mirrors that are enabled to do so
+
 float gridSpacing = 20; // grid spacing (mm)
+
 
 final int TYPE_SOURCE = 1;
 final int TYPE_MIRROR = 2;
@@ -21,7 +25,8 @@ void setup() {
   size(1200,800);
   su = height/1500.0; // px/su
   rs = 0.16667; // mm/su
- 
+  pannelTop = height*0.74;
+  
   sc = new Source( 934, 377, 155, nmr);
 
   mr = new Mirror[nmr];
@@ -55,12 +60,9 @@ void setup() {
 void draw() {
   background(255);
   makeGrid(gridSpacing/rs*su);
-  noStroke();
-  fill(255);
-  rect(0, height*0.74, width, height*0.3);
   
   for(int i = 0; i < bt.length; i++) {
-    bt[i].update();
+    bt[i].check();
     }
   
   doScan = bt[0].statusOn;
@@ -78,7 +80,17 @@ void draw() {
   sc.update();
   println("r", sc.rays[0].pos, degrees(-sc.rays[0].dir.heading()));
   println();
-    
+  
+  // painting bottom pannel
+  noStroke();
+  fill(255);
+  rect(0, pannelTop, width, height*0.3);
+ 
+  for(int i = 0; i < bt.length; i++) {
+    bt[i].update();
+  }
+  sc.showMeasurements();
+  
   plt[0].yvalues[mr[0].scan_index] = (sc.len - sc.scan_lminP) / su * rs;
   plt[1].yvalues[mr[0].scan_index] = (sc.scan_latPos - sc.scan_minLat - (sc.scan_maxLat - sc.scan_minLat)/2) / su * rs;
   

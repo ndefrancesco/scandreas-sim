@@ -7,6 +7,7 @@ class Button{
   boolean clicked;
   float diam;
   String label;
+  boolean pressed;
   
   Button(float x, float y, color col, boolean status, int enable, String lbl){
     bx = x;
@@ -19,8 +20,8 @@ class Button{
     label = lbl;
   }
   
-  void update(){
-    boolean pressed = false;
+  void check(){
+    pressed = false;
     if (mousePressed && (typeInUse == TYPE_NONE || typeInUse == TYPE_BUTTON)) {
       float dst = PVector.dist(new PVector (mouseX, mouseY), new PVector (bx, by));
       if (dst < diam/2){ // clicked on button
@@ -35,8 +36,9 @@ class Button{
       clicked = false;
       if (typeInUse == TYPE_BUTTON) typeInUse = TYPE_NONE;
     }
-    
-    
+  } 
+  
+  void update(){ 
     int alpha;
     if(statusOn) alpha = 180; else alpha = 64;
     fill(color(red(bcolor), green(bcolor), blue(bcolor), alpha));

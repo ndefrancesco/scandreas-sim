@@ -80,7 +80,7 @@ class Source {
   }
   
   void update(){
-    if (mousePressed && (typeInUse == TYPE_NONE || typeInUse == TYPE_SOURCE)) {
+    if (mousePressed && (typeInUse == TYPE_NONE || typeInUse == TYPE_SOURCE) && mouseY < pannelTop-10) {
       PVector mpos = new PVector (mouseX, mouseY);
       PVector delta = PVector.sub(mpos, pos);
       
@@ -158,7 +158,8 @@ class Source {
       strokeWeight(5 * su);
       ellipse(pos.x, pos.y, 25 * su, 25 * su);
     }
-    
+  }
+  void showMeasurements(){
     fill(0);
     textAlign(LEFT);
     textSize(32 * su);

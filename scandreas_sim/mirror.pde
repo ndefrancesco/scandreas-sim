@@ -51,7 +51,7 @@ class Mirror {
   }
   
   void update() {
-    if (mousePressed && (typeInUse == TYPE_NONE || typeInUse == TYPE_MIRROR)) {
+    if (mousePressed && (typeInUse == TYPE_NONE || typeInUse == TYPE_MIRROR) && mouseY < pannelTop-10) {
       
       PVector mpos =  new PVector(mouseX, mouseY);
       PVector delta = PVector.sub(mpos, pos);
