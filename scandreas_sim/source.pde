@@ -138,7 +138,7 @@ class Source {
     textAlign(LEFT);
     textSize(32 * su);
     text("exit angle (deg): " + roundTo(-degrees(rays[rays.length-1].dir.heading()), 4) + " ("+ roundTo(degrees(acos(PVector.dot(rays[rays.length-1].dir, rays[0].dir))), 4) +")", width * 0.7, height * 0.9);
-    text("path length (mm): " + roundTo(rays[rays.length-1].len * rs, 4) , width * 0.7, height * 0.9 + 50*su);
-    text("scan width (mm): " + roundTo(abs(scan_min - scan_max) * rs, 4) , width * 0.7, height * 0.9 + 100*su);
+    text("path length (mm): " + roundTo(rays[rays.length-1].len / su * rs, 4) , width * 0.7, height * 0.9 + 50*su);
+    text("scan width (mm): " + roundTo(abs(scan_min - scan_max) / su * rs, 4) , width * 0.7, height * 0.9 + 100*su);
   }
 }
