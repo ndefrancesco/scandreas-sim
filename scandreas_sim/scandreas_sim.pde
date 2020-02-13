@@ -8,7 +8,8 @@ float rs; // real scale: screen unit size (mm)
 int typeInUse; // type of object currently being modified
 int activeObject; // object that is selected for editing
 boolean doScan = true; // scan mirrors that are enabled to do so
-PGraphics canvas;
+float gridSpacing = 25; // grid spacing (mm)
+//PGraphics canvas;
 
 final int TYPE_SOURCE = 1;
 final int TYPE_MIRROR = 2;
@@ -39,16 +40,21 @@ void setup() {
   sc.trace();
   
   typeInUse = TYPE_NONE;
-  canvas = createGraphics(width, height);
-  canvas.beginDraw();
-  canvas.background(255);
-  canvas.endDraw();
+  
+  //canvas = createGraphics(width, height);
+  //canvas.beginDraw();
+  //canvas.background(255);
+  //canvas.endDraw();
 }
   
 void draw() {
   background(255);
-  imageMode(CORNER);
-  image(canvas, 0, 0, width, height);
+  makeGrid(gridSpacing/rs*su);
+  noStroke();
+  fill(255);
+  rect(0, height*0.8, width, height*0.3);
+  //imageMode(CORNER);
+  //image(canvas, 0, 0, width, height);
   
   for(int i = 0; i < bt.length; i++) {
     bt[0].update();
@@ -65,6 +71,22 @@ void draw() {
   println();
   
 }
+
+
+void makeGrid(float spacing){
+  stroke(220);
+  strokeWeight(2 * su);
+  for(float x = 0; x < width/2 ; x += spacing){
+    line(width/2 + x, 0, width/2 + x, height);
+    line(width/2 - x, 0, width/2 - x, height);   
+  }
+  
+  for(float y = 0; y < height/2; y += spacing){
+    line(0, height/2 + y, width, height/2 + y);
+    line(0, height/2 - y, width, height/2 - y);    
+  }
+}
+
 
 float roundTo(float v, int decimals){
   float r = round(v * pow(10, decimals))/pow(10, decimals);
