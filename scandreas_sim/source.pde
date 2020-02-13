@@ -168,7 +168,7 @@ class Source {
     text("exit angle (deg): " + roundTo(-degrees(rays[rays.length-1].dir.heading()), 4) + " ("+ roundTo(degrees(acos(PVector.dot(rays[rays.length-1].dir, rays[0].dir))), 4) +")", textW, textH);
     text("path len diff (mm): " + roundTo((len - scan_lminP) / su * rs, 4) + " ["+ nfp(degrees(- mr[0].scan_pos), 1, 2)+"°]", textW, textH + dH);
     text("scan pos (mm): " + roundTo(abs(scan_latPos - scan_minLat - (scan_maxLat - scan_minLat)/2) / su * rs, 4) , textW, textH + 2 * dH);
-    text("max path diff (mm): " + roundTo((scan_lmaxP - scan_lminP) / su * rs, 4) + "  (" + roundTo((scan_lmaxP - scan_lminP)/(scan_maxLat - scan_minLat) * 100,2) + "% sw)", textW, textH + 3.2 * dH);
+    text("max path diff (mm): " + roundTo((scan_lmaxP - scan_lminP) / su * rs, 4) + "  (" + roundTo(abs((scan_lmaxP - scan_lminP)/(scan_maxLat - scan_minLat) * 100),2) + "% sw)", textW, textH + 3.2 * dH);
     text("scan width (mm): " + roundTo(abs(scan_maxLat - scan_minLat) / su * rs, 4), textW, textH + 4.2 * dH);
   }
 }
