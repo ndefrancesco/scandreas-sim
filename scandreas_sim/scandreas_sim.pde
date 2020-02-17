@@ -3,7 +3,8 @@ Source sc;
 Button[] bt;
 Plot[] plt;
 
-int nmr = 3; // number of mirrors
+int nmr = 3; // number of mirrors, can be increased to automatically create extra mirrors to play with
+int nextObject = 0; // a counter for new object id's
 float su; // screen units (to adjust for smaller screens, e.g. cellphone using APDE)
 float rs; // real scale: screen unit size (mm)
 float pannelTop;
@@ -27,17 +28,20 @@ void setup() {
   rs = 0.16667; // mm/su
   pannelTop = height*0.74;
   
-  sc = new Source( 934, 377, 155, nmr);
+  sc = new Source( 934, 377, 155);
 
   mr = new Mirror[nmr];
   bt = new Button[2];
   plt = new Plot[3];
 
-  mr[0] = new Mirror(600, 533, 90, 0);
+  mr[0] = new Mirror(600, 533, 90);
   mr[0].scan = true; // scanning mirror
-  mr[1] = new Mirror(393, 436, 0, 1);
-  mr[2] = new Mirror(711, 283, -135, 2);
+  mr[1] = new Mirror(393, 436, 0);
+  mr[2] = new Mirror(711, 283, -135);
   
+  for(int i = 0; i<nmr; i++){
+    if(mr[i] == null) mr[i] = new Mirror(100, 50*(nmr-i), 90);
+  }
 
   bt[0] = new Button(width*0.72, height * 0.78, color(100, 100, 200), true, TYPE_NONE, "toggle scan");
   bt[1] = new Button(width*0.87, height * 0.78, color(200, 100, 100), true, TYPE_NONE, "reset scan");
@@ -50,7 +54,7 @@ void setup() {
     plt[1].xvalues[i] = (float(2 * i)/(mr[0].scan_range - 1) - 1) * degrees(-mr[0].scan_amp);
   }
   
-  activeObject = nmr;
+  activeObject = 0;
   sc.trace();
   
   typeInUse = TYPE_NONE;

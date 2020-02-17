@@ -18,7 +18,7 @@ class Source {
   float scan_lminP = Float.NaN; // last scan min
   float scan_lmaxP = Float.NaN; // las scan max
   
-  Source(float x, float y, float a, int source_id){
+  Source(float x, float y, float a){
     pos = new PVector(x, y);
     PVector ray_dir = PVector.fromAngle(a/180*PI);
     rays = new Ray[1];
@@ -27,7 +27,8 @@ class Source {
     rotating = false;
     clicked = false;
     moff = false;
-    id = source_id;
+    id = nextObject;
+    nextObject++;
   }
   
   void trace(){

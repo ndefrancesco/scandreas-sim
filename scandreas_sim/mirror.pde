@@ -18,13 +18,14 @@ class Mirror {
   float scan_pos;
   float scan_amp = radians(-0.8);
   
-  Mirror (float x, float y, float a, int mirror_id){
+  Mirror (float x, float y, float a){
     pos = new PVector (x, y);
     center_angle = radians(-a);
     norm = PVector.fromAngle(center_angle);
     par = new PVector (-norm.y, norm.x);
     mrw = 50 / rs * su;
-    id = mirror_id;
+    id = nextObject;
+    nextObject++;
     rotating = false;
     moving = false;
     clicked = false;
